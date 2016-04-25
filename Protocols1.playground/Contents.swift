@@ -41,10 +41,16 @@ func printTable(dataSource: protocol<TabularDataSource, CustomStringConvertible>
     // Also keep track of the width of each column
     var columnWidths = [Int]()
     
-    for columnLabel in columnLabels {
+    for (column, columnLabel) in columnLabels.enumerate() {
         let columnHeader = " \(columnLabel) |"
-        firstRow += columnHeader
         columnWidths.append(columnHeader.characters.count)
+        
+        // determine item with maximum width in column
+        for row in 0 ..< dataSource.numberOfRows {
+            let itemString = " \(dataSource.itemForRow(row, column: column)) |"
+            columnWidths[column] = max(columnWidths[column], itemString.characters.count)
+        }
+        firstRow += padding(columnWidths[column] - columnHeader.characters.count) + "\(columnHeader)"
     }
     print(firstRow)
     
@@ -119,7 +125,7 @@ struct Department: TabularDataSource, CustomStringConvertible {
 }
 
 var department = Department(name: "Engineering")
-department.addPerson(Person(name: "Joe", age: 30, yearsOfExperience: 6))
+department.addPerson(Person(name: "Joe", age: 3000, yearsOfExperience: 6))
 department.addPerson(Person(name: "Karen", age: 40, yearsOfExperience: 18))
 department.addPerson(Person(name: "Fred", age: 50, yearsOfExperience: 20))
 
