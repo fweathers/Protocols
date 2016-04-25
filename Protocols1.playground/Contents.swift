@@ -10,6 +10,16 @@ func padding(amount: Int) -> String {
     return paddingString
 }
 
+protocol TabularDataSource {
+    var numberOfRows: Int { get }
+    var numberOfColumns: Int { get }
+    
+    func labelForRow(row: Int) -> String
+    func labelForColumn(column: Int) -> String
+    
+    func itemForRow(row: Int, column: Int) -> Int
+}
+
 func printTable(rowLabels: [String],columnLabels: [String], data: [[Int]]) {
     // Create an array of the width of each row label
     let rowLabelWidths = rowLabels.map { $0.characters.count }
