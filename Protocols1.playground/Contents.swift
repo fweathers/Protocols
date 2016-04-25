@@ -74,6 +74,10 @@ struct Department: TabularDataSource {
     let name: String
     var people = [Person]()
     
+    var description: String {
+        return "Department (\(name))"
+    }
+    
     init(name: String) {
         self.name = name
     }
@@ -118,3 +122,4 @@ department.addPerson(Person(name: "Karen", age: 40, yearsOfExperience: 18))
 department.addPerson(Person(name: "Fred", age: 50, yearsOfExperience: 20))
 
 printTable(department)
+print(department)
