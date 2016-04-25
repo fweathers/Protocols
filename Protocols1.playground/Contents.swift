@@ -10,7 +10,7 @@ func padding(amount: Int) -> String {
     return paddingString
 }
 
-protocol TabularDataSource {
+protocol TabularDataSource: CustomStringConvertible {
     var numberOfRows: Int { get }
     var numberOfColumns: Int { get }
     
@@ -21,6 +21,8 @@ protocol TabularDataSource {
 }
 
 func printTable(dataSource: TabularDataSource) {
+    print("Table: \(dataSource.description)")
+    
     // Create arrays of the row and column labels
     let rowLabels = (0..<dataSource.numberOfRows).map { dataSource.labelForRow($0) }
     let columnLabels = (0..<dataSource.numberOfColumns).map { dataSource.labelForColumn($0) }
@@ -122,4 +124,3 @@ department.addPerson(Person(name: "Karen", age: 40, yearsOfExperience: 18))
 department.addPerson(Person(name: "Fred", age: 50, yearsOfExperience: 20))
 
 printTable(department)
-print(department)
