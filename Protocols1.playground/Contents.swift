@@ -10,7 +10,7 @@ func padding(amount: Int) -> String {
     return paddingString
 }
 
-protocol TabularDataSource: CustomStringConvertible {
+protocol TabularDataSource {
     var numberOfRows: Int { get }
     var numberOfColumns: Int { get }
     
@@ -20,7 +20,7 @@ protocol TabularDataSource: CustomStringConvertible {
     func itemForRow(row: Int, column: Int) -> Int
 }
 
-func printTable(dataSource: TabularDataSource) {
+func printTable(dataSource: protocol<TabularDataSource, CustomStringConvertible>) {
     print("Table: \(dataSource.description)")
     
     // Create arrays of the row and column labels
@@ -72,7 +72,7 @@ struct Person {
     let yearsOfExperience: Int
 }
 
-struct Department: TabularDataSource {
+struct Department: TabularDataSource, CustomStringConvertible {
     let name: String
     var people = [Person]()
     
