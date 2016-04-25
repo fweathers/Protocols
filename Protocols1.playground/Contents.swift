@@ -20,7 +20,11 @@ protocol TabularDataSource {
     func itemForRow(row: Int, column: Int) -> Int
 }
 
-func printTable(rowLabels: [String],columnLabels: [String], data: [[Int]]) {
+func printTable(dataSource: TabularDataSource) {
+    // Create arrays of the row and column labels
+    let rowLabels = (0..<dataSource.numberOfRows).map { dataSource.labelForRow($0) }
+    let columnLabels = (0..<dataSource.numberOfColumns).map { dataSource.labelForColumn($0) }
+    
     // Create an array of the width of each row label
     let rowLabelWidths = rowLabels.map { $0.characters.count }
     
@@ -42,14 +46,15 @@ func printTable(rowLabels: [String],columnLabels: [String], data: [[Int]]) {
     }
     print(firstRow)
     
-    for (i, row) in data.enumerate() {
+    for i in 0..<dataSource.numberOfRows {
         // Pad the row label out so they are all the same length
         let paddingAmount = maxRowLabelWidth - rowLabelWidths[i]
         var out = rowLabels[i] + padding(paddingAmount) + " |"
         
         
         // Append each item in this row to our string
-        for (j, item) in row.enumerate() {
+        for j in 0..<dataSource.numberOfColumns {
+            let item = dataSource.itemForRow(i, column: j)
             let itemString = " \(item) |"
             let paddingAmount = columnWidths[j] - itemString.characters.count
             out += padding(paddingAmount) + itemString
@@ -65,7 +70,7 @@ struct Person {
     let yearsOfExperience: Int
 }
 
-struct Department {
+struct Department: TabularDataSource {
     let name: String
     var people = [Person]()
     
@@ -76,9 +81,40 @@ struct Department {
     mutating func addPerson(person: Person) {
         people.append(person)
     }
+    
+    var numberOfRows: Int {
+        return people.count
+    }
+    
+    var numberOfColumns: Int {
+        return 2
+    }
+    
+    func labelForRow(row: Int) -> String {
+        return people[row].name
+    }
+    
+    func labelForColumn(column: Int) -> String {
+        switch column {
+        case 0: return "Age"
+        case 1: return "Years of Experience"
+        default: fatalError("Invalid column!")
+        }
+    }
+    
+    func itemForRow(row: Int, column: Int) -> Int {
+        let person = people[row]
+        switch column {
+        case 0: return person.age
+        case 1: return person.yearsOfExperience
+        default: fatalError("Invalid column!")
+        }
+    }
 }
 
 var department = Department(name: "Engineering")
 department.addPerson(Person(name: "Joe", age: 30, yearsOfExperience: 6))
 department.addPerson(Person(name: "Karen", age: 40, yearsOfExperience: 18))
 department.addPerson(Person(name: "Fred", age: 50, yearsOfExperience: 20))
+
+printTable(department)
